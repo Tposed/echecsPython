@@ -1,336 +1,240 @@
-import pygame
+from tkinter import *
+root = Tk()
+clicks = 0
+coins = 0
+mult = 1
+price = 25 * mult
+dark = False
+cheatused = False
+cheat2used = False
+cheat3used = False
+cheat4used = False
+cheat5used = False
 
-WI = pygame.display.set_mode((1120, 720))
-pygame.display.set_caption("Chess!")
-sidemenu = pygame.image.load('menu.png')
+root.title('GooseClicker')
+root.geometry('760x490')
+# root.iconbitmap('forg.ico')
+root.configure(background='#eeeeff')
+root.resizable(False, False)
 
-boardPurple = pygame.image.load('boardpurp.png')
-boardGreen = pygame.image.load('boardgreen.png')
-boardBrown = pygame.image.load('boardbrown.png')
-board_color = 0
-d = 0
+def click():
+    global clicks, coins
+    clicks += 1
+    coins += 1 * mult
+    click_text.config(text=f"Total clicks : {clicks}")
+    coin_text.config(text=f"Coins : {coins}")
 
-playing = True
+spacer_text = Label(root, text="              ", font=('Comic Sans MS', 14), bg='#eeeeff', fg='#eeeeff')
+spacer_text.grid(row=1, column=7)
+spacer2_text = Label(root, text="              ", font=('Comic Sans MS', 14), bg='#eeeeff', fg='#eeeeff')
+spacer2_text.grid(row=2, column=7)
+spacer3_text = Label(root, text="  ", font=('Comic Sans MS', 14), bg='#eeeeff', fg='#eeeeff')
+spacer3_text.grid(row=0, column=6)
+spacer4_text = Label(root, text="              ", font=('Comic Sans MS', 14), bg='#eeeeff', fg='#eeeeff')
+spacer4_text.grid(row=0, column=5)
+spacer5_text = Label(root, text="              ", font=('Comic Sans MS', 14), bg='#eeeeff', fg='#eeeeff')
+spacer5_text.grid(row=0, column=4)
+spacer6_text = Label(root, text="              ", font=('Comic Sans MS', 14), bg='#eeeeff', fg='#eeeeff')
+spacer6_text.grid(row=0, column=3)
+spacer7_text = Label(root, text="                               ", font=('Comic Sans MS', 14), bg='#eeeeff', fg='#eeeeff')
+spacer7_text.grid(row=5, column=0)
+spacer8_text = Label(root, text="                                     ", font=('Comic Sans MS', 14), bg='#eeeeff', fg= '#eeeeff')
+spacer8_text.grid(row=0, column=10)
+spacer9_text = Label(root, text="                                     ", font=('Comic Sans MS', 14), bg='#eeeeff', fg= '#eeeeff')
+spacer9_text.grid(row=0, column=7)
+click_text = Label(root, text="Total clicks : 0", font=('Comic Sans MS', 14), bg='#eeeeff')
+click_text.grid(row=0, column=0)
+coin_text = LabelFrame(root, text="Coins : 0", font=('Comic Sans MS', 18), bg='#eeeeff', padx=32, pady=16,labelanchor='n')
+coin_text.grid(row=4, column=4)
+mult_frame = LabelFrame(root, text="Click multiplier : 1", font=('Comic Sans MS', 13), labelanchor='n', bg='#eeeeff',padx=8, pady=10)
+mult_frame.grid(row=3, column=7)
+main_button = Button(coin_text, text="Click",font=('Comic Sans MS', 18),bg='#8888ff',fg='white',anchor='center',command=click,activebackground='#eeeeff',highlightbackground='#eeeeff')
+main_button.pack(anchor='n')
+no_money_text = Label(root, text=f"Not enough money , need : {price}", font=('Comic Sans MS', 12), fg='red',bg='#eeeeff')
 
-# pieces
+def mult_buy():
+    global coins, mult, price
+    if coins >= price:
+        coins -= price
+        mult += 1
+        price = 25 * mult
+        coin_text.config(text=f"Coins : {coins}")
+        mult_frame.config(text=f"Click multiplier : {mult}")
+        mult_button.config(text=f'Buy Multiplier : {price}')
+    else:
+        if dark is True:
+            no_money_text.config(text=f"Not enough money , need : {price}", bg='#333344')
+            no_money_text.grid(row=6, column=7)
+        else:
+            no_money_text.config(text=f"Not enough money , need : {price}", bg='#eeeeff')
+            no_money_text.grid(row=6, column=7)
+mult_button = Button(mult_frame, text=f'Buy Multiplier : {price}',font=('Comic Sans MS', 14),bg='#8888ff',fg='white',command=mult_buy,activebackground='#eeeeff',highlightbackground='#eeeeff')
+mult_button.pack()
+no_money_geese = Label(root, text="Not enough money , need : 50", font=('Comic Sans MS', 12), fg='red', bg='#eeeeff')
 
-b_rook1 = pygame.image.load('pieceBr.png')
-b_rook2 = pygame.image.load('pieceBr.png')
-b_knight1 = pygame.image.load('pieceBn.png')
-b_knight2 = pygame.image.load('pieceBn.png')
-b_bishop1 = pygame.image.load('pieceBb.png')
-b_bishop2 = pygame.image.load('pieceBb.png')
-b_queen = pygame.image.load('pieceBq.png')
-b_king = pygame.image.load('pieceBk.png')
-b_pawn1 = pygame.image.load('pieceBp.png')
-b_pawn2 = pygame.image.load('pieceBp.png')
-b_pawn3 = pygame.image.load('pieceBp.png')
-b_pawn4 = pygame.image.load('pieceBp.png')
-b_pawn5 = pygame.image.load('pieceBp.png')
-b_pawn6 = pygame.image.load('pieceBp.png')
-b_pawn7 = pygame.image.load('pieceBp.png')
-b_pawn8 = pygame.image.load('pieceBp.png')
+def geese_buy():
+    global coins, geese
+    if coins >= 50:
+        coins -= 50
+        geese += 1
+        coin_text.config(text=f"Coins : {coins}")
+    else:
+        if dark is True:
+            no_money_geese.config(text="Not enough money , need : 100", font=('Comic Sans MS', 12), fg='red',
+                                  bg='#333344')
+            no_money_geese.grid(row=7, column=7)
+        else:
+            no_money_geese.config(text="Not enough money , need : 100", font=('Comic Sans MS', 12), fg='red',
+                                  bg='#eeeeff')
+            no_money_geese.grid(row=7, column=7)
 
-w_rook1 = pygame.image.load('pieceWr.png')
-w_rook2 = pygame.image.load('pieceWr.png')
-w_knight1 = pygame.image.load('pieceWn.png')
-w_knight2 = pygame.image.load('pieceWn.png')
-w_bishop1 = pygame.image.load('pieceWb.png')
-w_bishop2 = pygame.image.load('pieceWb.png')
-w_queen = pygame.image.load('pieceWq.png')
-w_king = pygame.image.load('pieceWk.png')
-w_pawn1 = pygame.image.load('pieceWp.png')
-w_pawn2 = pygame.image.load('pieceWp.png')
-w_pawn3 = pygame.image.load('pieceWp.png')
-w_pawn4 = pygame.image.load('pieceWp.png')
-w_pawn5 = pygame.image.load('pieceWp.png')
-w_pawn6 = pygame.image.load('pieceWp.png')
-w_pawn7 = pygame.image.load('pieceWp.png')
-w_pawn8 = pygame.image.load('pieceWp.png')
+exit_button = Button(root, text="Exit Game",font=('Comic Sans MS', 12),bg='#111133',fg='#ffffff',command=exit,activebackground='#eeeeff',highlightbackground='#eeeeff')
+exit_button.grid(row=1, column=7)
 
-no_piece = 0
+def light_mode():
+    global dark
+    root.configure(background='#eeeeff')
+    darkmode.config(text='Dark mode : Off', command=dark_mode, padx=1)
+    spacer_text.config(bg='#eeeeff', fg='#eeeeff')
+    spacer2_text.config(bg='#eeeeff', fg='#eeeeff')
+    spacer3_text.config(bg='#eeeeff', fg='#eeeeff')
+    spacer4_text.config(bg='#eeeeff', fg='#eeeeff')
+    spacer5_text.config(bg='#eeeeff', fg='#eeeeff')
+    spacer6_text.config(bg='#eeeeff', fg='#eeeeff')
+    spacer7_text.config(bg='#eeeeff', fg='#eeeeff')
+    spacer8_text.config(bg='#eeeeff', fg='#eeeeff')
+    spacer9_text.config(bg='#eeeeff', fg='#eeeeff')
+    click_text.config(bg='#eeeeff', fg='#333344')
+    coin_text.config(bg='#eeeeff', fg='#333344')
+    mult_frame.config(bg='#eeeeff', fg='#333344')
+    no_money_text.config(fg='red', bg='#eeeeff')
+    no_money_geese.config(fg='red', bg='#eeeeff')
+    clearerrors.config(padx=7)
+    cleardata.config(padx=6)
+    dark = False
 
-pieces = [b_rook1, b_knight1, b_bishop1, b_queen, b_king, b_bishop2, b_knight2, b_rook2, b_pawn1, b_pawn2, b_pawn3, b_pawn4, b_pawn5, b_pawn6, b_pawn7, b_pawn8, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, no_piece, w_pawn1, w_pawn2, w_pawn3, w_pawn4, w_pawn5, w_pawn6, w_pawn7, w_pawn8, w_rook1, w_knight1, w_bishop1, w_queen, w_king, w_bishop2, w_knight2, w_rook2]
+def dark_mode():
+    global dark
+    root.configure(background='#333344')
+    darkmode.config(text='Dark mode : On ', command=light_mode, padx=2)
+    spacer_text.config(bg='#333344', fg='#333344')
+    spacer2_text.config(bg='#333344', fg='#333344')
+    spacer3_text.config(bg='#333344', fg='#333344')
+    spacer4_text.config(bg='#333344', fg='#333344')
+    spacer5_text.config(bg='#333344', fg='#333344')
+    spacer6_text.config(bg='#333344', fg='#333344')
+    spacer7_text.config(bg='#333344', fg='#333344')
+    spacer8_text.config(bg='#333344', fg='#333344')
+    spacer9_text.config(bg='#333344', fg='#333344')
+    click_text.config(bg='#333344', fg='#ffffff')
+    coin_text.config(bg='#333344', fg='#ffffff')
+    mult_frame.config(bg='#333344', fg='#ffffff')
+    no_money_geese.config(fg='red', bg='#333344')
+    no_money_text.config(fg='red', bg='#333344')
+    clearerrors.config(padx=6)
+    cleardata.config(padx=5)
+    dark = True
 
-def movement():
-    global d
-    if event.type == pygame.MOUSEBUTTONDOWN:
-        mx, my = pygame.mouse.get_pos()
-        if mx > 0 and mx < 90 and my > 0 and my < 90:
-            d = pieces[0]
-        if mx > 90 and mx < 180 and my > 0 and my < 90:
-            d = pieces[1]
-        if mx > 180 and mx < 270 and my > 0 and my < 90:
-            d = pieces[2]
-        if mx > 270 and mx < 360 and my > 0 and my < 90:
-            d = pieces[3]
-        if mx > 360 and mx < 450 and my > 0 and my < 90:
-            d = pieces[4]
-        if mx > 450 and mx < 540 and my > 0 and my < 90:
-            d = pieces[5]
-        if mx > 540 and mx < 630 and my > 0 and my < 90:
-            d = pieces[6]
-        if mx > 630 and mx < 720 and my > 0 and my < 90:
-            d = pieces[7]
-        
-        if mx > 0 and mx < 90 and my > 90 and my < 180:
-            d = pieces[8]
-        if mx > 90 and mx < 180 and my > 90 and my < 180:
-            d = pieces[9]
-        if mx > 180 and mx < 270 and my > 90 and my < 180:
-            d = pieces[10]
-        if mx > 270 and mx < 360 and my > 90 and my < 180:
-            d = pieces[11]
-        if mx > 360 and mx < 450 and my > 90 and my < 180:
-            d = pieces[12]
-        if mx > 450 and mx < 540 and my > 90 and my < 180:
-            d = pieces[13]
-        if mx > 540 and mx < 630 and my > 90 and my < 180:
-            d = pieces[14]
-        if mx > 630 and mx < 720 and my > 90 and my < 180:
-            d = pieces[15]
-        
-        if mx > 0 and mx < 90 and my > 180 and my < 270:
-            d = pieces[16]
-        if mx > 90 and mx < 180 and my > 180 and my < 270:
-            d = pieces[17]
-        if mx > 180 and mx < 270 and my > 180 and my < 270:
-            d = pieces[18]
-        if mx > 270 and mx < 360 and my > 180 and my < 270:
-            d = pieces[19]
-        if mx > 360 and mx < 450 and my > 180 and my < 270:
-            d = pieces[20]
-        if mx > 450 and mx < 540 and my > 180 and my < 270:
-            d = pieces[21]
-        if mx > 540 and mx < 630 and my > 180 and my < 270:
-            d = pieces[22]
-        if mx > 630 and mx < 720 and my > 180 and my < 270:
-            d = pieces[23]
+darkmode = Button(root, text='Dark mode : Off',font=('Comic Sans MS', 12),command=dark_mode,bg='#111133',fg='#ffffff',activebackground='#eeeeff',highlightbackground='#eeeeff',padx=1,pady=6)
 
-        if mx > 0 and mx < 90 and my > 270 and my < 360:
-            d = pieces[24]
-        if mx > 90 and mx < 180 and my > 270 and my < 360:
-            d = pieces[25]
-        if mx > 180 and mx < 270 and my > 270 and my < 360:
-            d = pieces[26]
-        if mx > 270 and mx < 360 and my > 270 and my < 360:
-            d = pieces[27]
-        if mx > 360 and mx < 450 and my > 270 and my < 360:
-            d = pieces[28]
-        if mx > 450 and mx < 540 and my > 270 and my < 360:
-            d = pieces[29]
-        if mx > 540 and mx < 630 and my > 270 and my < 360:
-            d = pieces[30]
-        if mx > 630 and mx < 720 and my > 270 and my < 360:
-            d = pieces[31]
+def clear_errors():
+    no_money_text.config(text=' ')
+    no_money_geese.config(text=' ')
 
-    if event.type == pygame.MOUSEBUTTONUP:
-            d = 0
+clearerrors = Button(root, text='Clear Errors',font=('Comic Sans MS', 14),command=clear_errors,bg='#111133',fg='#ffffff',activebackground='#eeeeff',padx=7,pady=5)
 
-def drawtable():
-    mx, my = pygame.mouse.get_pos()
-    #board colors
-    if board_color == 0:
-        WI.blit(pygame.transform.scale(boardPurple, (720, 720)),(0, 0))
-    if board_color == 1:
-        WI.blit(pygame.transform.scale(boardGreen, (720, 720)),(0, 0))
-    if board_color == 2:
-        WI.blit(pygame.transform.scale(boardBrown, (720, 720)),(0, 0))
+def clear_data():
+    global clicks, coins, mult, geese, cheatused, cheat2used, cheat3used
+    clicks = 0
+    coins = 0
+    mult = 1
+    geese = 0
+    click_text.config(text=f"Total clicks : {clicks}")
+    coin_text.config(text=f"Coins : {coins}")
+    mult_frame.config(text=f"Click multiplier : {mult}")
+    mult_button.config(text=f'Buy Multiplier : {price}')
+    cheatused = False
+    cheat2used = False
+    cheat3used = False
 
-    WI.blit(sidemenu, (720, 0))
-    
-    #rendering all the pieces on the board
-    if playing == True:
-        if pieces[0] != no_piece:
-            if d == pieces[0]:
-                WI.blit(pieces[0], (mx-64, my-64))
-            else:
-                WI.blit(pieces[0], (0-19, 0-19))
-        if pieces[1] != no_piece:
-            if d == pieces[1]:
-                WI.blit(pieces[1], (mx-64, my-64))
-            else:
-                WI.blit(pieces[1], (90-19, 0-19))
-        if pieces[2] != no_piece:
-            if d == pieces[2]:
-                WI.blit(pieces[2], (mx-64, my-64))
-            else:
-                WI.blit(pieces[2], (180-19, 0-19))
-        if pieces[3] != no_piece:
-            if d == pieces[3]:
-                WI.blit(pieces[3], (mx-64, my-64))
-            else:
-                WI.blit(pieces[3], (270-19, 0-19))
-        if pieces[4] != no_piece:
-            if d == pieces[4]:
-                WI.blit(pieces[4], (mx-64, my-64))
-            else:
-                WI.blit(pieces[4], (360-19, 0-19))
-        if pieces[5] != no_piece:
-            if d == pieces[5]:
-                WI.blit(pieces[5], (mx-64, my-64))
-            else:
-                WI.blit(pieces[5], (450-19, 0-19))
-        if pieces[6] != no_piece:
-            if d == pieces[6]:
-                WI.blit(pieces[6], (mx-64, my-64))
-            else:
-                WI.blit(pieces[6], (540-19, 0-19))
-        if pieces[7] != no_piece:
-            if d == pieces[7]:
-                WI.blit(pieces[7], (mx-64, my-64))
-            else:
-                WI.blit(pieces[7], (630-19, 0-19))
+cleardata = Button(root, text=" Clear  Data ",font=('Comic Sans MS', 14),bg='#111133',fg='#ffffff',command=clear_data,activebackground='#eeeeff',highlightbackground='#eeeeff',padx=6,pady=0)
 
-        if pieces[8] != no_piece:
-            if d == pieces[8]:
-                WI.blit(pieces[8], (mx-64, my-64))
-            else:
-                WI.blit(pieces[8], (0-19, 90-19))
-        if pieces[9] != no_piece:
-            if d == pieces[9]:
-                WI.blit(pieces[9], (mx-64, my-64))
-            else:
-                WI.blit(pieces[9], (90-19, 90-19))
-        if pieces[10] != no_piece:
-            if d == pieces[10]:
-                WI.blit(d, (mx-64, my-64))
-            else:
-                WI.blit(pieces[10], (180-19, 90-19))
-        if pieces[11] != no_piece:
-            if d == pieces[11]:
-                WI.blit(d, (mx-64, my-64))
-            else:
-                WI.blit(pieces[11], (270-19, 90-19))
-        if pieces[12] != no_piece:
-            if d == pieces[12]:
-                WI.blit(d, (mx-64, my-64))
-            else:
-                WI.blit(pieces[12], (360-19, 90-19))
-        if pieces[13] != no_piece:
-            if d == pieces[13]:
-                WI.blit(d, (mx-64, my-64))
-            else:
-                WI.blit(pieces[13], (450-19, 90-19))
-        if pieces[14] != no_piece:
-            if d == pieces[14]:
-                WI.blit(d, (mx-64, my-64))
-            else:
-                WI.blit(pieces[14], (540-19, 90-19))
-        if pieces[15] != no_piece:
-            if d == pieces[15]:
-                WI.blit(d, (mx-64, my-64))
-            else:
-                WI.blit(pieces[15], (630-19, 90-19))
+def settingsoff():
+    settingsbutton.config(text='Settings', font=('Comic Sans MS', 12), command=settingson)
+    cleardata.grid(row=7, column=11)
+    clearerrors.grid(row=6, column=11)
+    darkmode.grid(row=5, column=11)
 
-        if pieces[16] != no_piece:
-            WI.blit(pieces[16], (0-19, 180-19))
-        if pieces[17] != no_piece:
-            WI.blit(pieces[17], (90-19, 180-19))
-        if pieces[18] != no_piece:
-            WI.blit(pieces[18], (180-19, 180-19))
-        if pieces[19] != no_piece:
-            WI.blit(pieces[19], (270-19, 180-19))
-        if pieces[20] != no_piece:
-            WI.blit(pieces[20], (360-19, 180-19))
-        if pieces[21] != no_piece:
-            WI.blit(pieces[21], (450-19, 180-19))
-        if pieces[22] != no_piece:
-            WI.blit(pieces[22], (540-19, 180-19))
-        if pieces[23] != no_piece:
-            WI.blit(pieces[23], (630-19, 180-19))
+def settingson():
+    settingsbutton.config(text='Settings', font=('Comic Sans MS', 12), command=settingsoff)
+    cleardata.grid(row=7, column=0)
+    clearerrors.grid(row=6, column=0)
+    darkmode.grid(row=5, column=0)
+settingsbutton = Button(root, text='Settings',font=('Comic Sans MS', 12),command=settingson,bg='#111133',fg='#ffffff',activebackground='#eeeeff',highlightbackground='#eeeeff')
+settingsbutton.grid(row=4, column=0)
+cleardata.grid(row=7, column=11)
+clearerrors.grid(row=6, column=11)
+darkmode.grid(row=5, column=11)
 
-        if pieces[24] != no_piece:
-            WI.blit(pieces[24], (0-19, 270-19))
-        if pieces[25] != no_piece:
-            WI.blit(pieces[25], (90-19, 270-19))
-        if pieces[26] != no_piece:
-            WI.blit(pieces[26], (180-19, 270-19))
-        if pieces[27] != no_piece:
-            WI.blit(pieces[27], (270-19, 270-19))
-        if pieces[28] != no_piece:
-            WI.blit(pieces[28], (360-19, 270-19))
-        if pieces[29] != no_piece:
-            WI.blit(pieces[29], (450-19, 270-19))
-        if pieces[30] != no_piece:
-            WI.blit(pieces[30], (540-19, 270-19))
-        if pieces[31] != no_piece:
-            WI.blit(pieces[31], (630-19, 270-19))
+# cheat codurile 
 
-        if pieces[32] != no_piece:
-            WI.blit(pieces[32], (0-19, 360-19))
-        if pieces[33] != no_piece:
-            WI.blit(pieces[33], (90-19, 360-19))
-        if pieces[34] != no_piece:
-            WI.blit(pieces[34], (180-19, 360-19))
-        if pieces[35] != no_piece:
-            WI.blit(pieces[35], (270-19, 360-19))
-        if pieces[36] != no_piece:
-            WI.blit(pieces[36], (360-19, 360-19))
-        if pieces[37] != no_piece:
-            WI.blit(pieces[37], (450-19, 360-19))
-        if pieces[38] != no_piece:
-            WI.blit(pieces[38], (540-19, 360-19))
-        if pieces[39] != no_piece:
-            WI.blit(pieces[39], (630-19, 360-19))
+def cheats():
+    global coins, cheatused, cheat2used, cheat3used, cheat4used, cheat5used, mult, price
+    if code.get() == 'egg':
+        if cheatused is False:
+            mult += 1
+            cheatused = True
+            code.insert(0, "Code Redeemed : ")
+        else:
+            code.insert(0, 'Already used : ')
+    elif code.get() == '10mult':
+        if cheat2used is False:
+            coins += 10
+            mult += 10
+            price = 25 * mult
+            cheat2used = True
+            coin_text.config(text=f"Coins : {coins}")
+            mult_frame.config(text=f"Click multiplier : {mult}")
+            mult_button.config(text=f'Buy Multiplier : {price}')
+            code.insert(0, "Code Redeemed : ")
+        else:
+            code.insert(0, 'Already used : ')
+    elif code.get() == 'money':
+        if cheat3used is False:
+            coins += 100
+            cheat3used = True
+            coin_text.config(text=f"Coins : {coins}")
+            code.insert(0, "Code Redeemed : ")
+        else:
+            code.insert(0, 'Already used : ')
+    elif code.get() == 'Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : Incorrect Code : ' :
+        if cheat4used is False:
+            coins += 69420
+            cheat4used = True
+            coin_text.config(text=f"Coins : {coins}")
+            code.insert(0, "Code Redeemed : ")
+        else:
+            code.insert(0, 'Already used : ')
+    elif code.get() == 'nemo' or code.get() == 'NEMO':
+        if cheat5used is False:
+            coins += 1000
+            mult += 10
+            price = 25 * mult
+            cheat5used = True
+            coin_text.config(text=f"Coins : {coins}")
+            mult_frame.config(text=f"Click multiplier : {mult}")
+            mult_button.config(text=f'Buy Multiplier : {price}')
+            code.insert(0, "omg nemo Code Redeemed : ")
+        else:
+            code.insert(0, 'Already used : ')
+    else:
+        code.insert(0, 'Incorrect Code : ')
 
-        if pieces[40] != no_piece:
-            WI.blit(pieces[40], (0-19, 450-19))
-        if pieces[41] != no_piece:
-            WI.blit(pieces[41], (90-19, 450-19))
-        if pieces[42] != no_piece:
-            WI.blit(pieces[42], (180-19, 450-19))
-        if pieces[43] != no_piece:
-            WI.blit(pieces[43], (270-19, 450-19))
-        if pieces[44] != no_piece:
-            WI.blit(pieces[44], (360-19, 450-19))
-        if pieces[45] != no_piece:
-            WI.blit(pieces[45], (450-19, 450-19))
-        if pieces[46] != no_piece:
-            WI.blit(pieces[46], (540-19, 450-19))
-        if pieces[47] != no_piece:
-            WI.blit(pieces[47], (630-19, 450-19))
+code = Entry(width=22)
+code.insert(0, 'Enter Cheat Code')
+code.grid(row=6, column=4)
+code_button = Button(root, text="Enter Code",font=('Comic Sans MS', 12),bg='#8888ff',fg='white',command=cheats,activebackground='#eeeeff',highlightbackground='#eeeeff',pady=2,padx=4)
+code_button.grid(row=7, column=4)
 
-        if pieces[48] != no_piece:
-            WI.blit(pieces[48], (0-19, 540-19))
-        if pieces[49] != no_piece:
-            WI.blit(pieces[49], (90-19, 540-19))
-        if pieces[50] != no_piece:
-            WI.blit(pieces[50], (180-19, 540-19))
-        if pieces[51] != no_piece:
-            WI.blit(pieces[51], (270-19, 540-19))
-        if pieces[52] != no_piece:
-            WI.blit(pieces[52], (360-19, 540-19))
-        if pieces[53] != no_piece:
-            WI.blit(pieces[53], (450-19, 540-19))
-        if pieces[54] != no_piece:
-            WI.blit(pieces[54], (540-19, 540-19))
-        if pieces[55] != no_piece:
-            WI.blit(pieces[55], (630-19, 540-19))
 
-        if pieces[56] != no_piece:
-            WI.blit(pieces[56], (0-19, 630-19))
-        if pieces[57] != no_piece:
-            WI.blit(pieces[57], (90-19, 630-19))
-        if pieces[58] != no_piece:
-            WI.blit(pieces[58], (180-19, 630-19))
-        if pieces[59] != no_piece:
-            WI.blit(pieces[59], (270-19, 630-19))
-        if pieces[60] != no_piece:
-            WI.blit(pieces[60], (360-19, 630-19))
-        if pieces[61] != no_piece:
-            WI.blit(pieces[61], (450-19, 630-19))
-        if pieces[62] != no_piece:
-            WI.blit(pieces[62], (540-19, 630-19))
-        if pieces[63] != no_piece:
-            WI.blit(pieces[63], (630-19, 630-19))
-    pygame.display.update()
-
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    movement()
-    drawtable()
-pygame.quit()
+root.mainloop()
